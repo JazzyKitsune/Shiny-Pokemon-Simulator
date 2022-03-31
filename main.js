@@ -2,9 +2,12 @@ function randomInt(max) {
     return Math.floor(Math.random() * max)
 }
 
+function calculateShiny(trID, srID, ppV) {
+    return trID ^ srID ^ (ppV & 0xFFFF) ^ (ppV >>> 16)
+}
+
 let tID = 0                 // Trainer ID - 16 bit int
 let sID = 0                 // Secret ID - 16 bit int
-let tSV = tID^sID           // Trainer Shiny Value 
 let pID = 0                 // Pokemon's Personality ID - 32 bit int
 let pSV = 0                 // Pokemon Shiny Value
 let shiny = 0               // Shiny Value, if shiny < 8 then the Pokemon is Shiny
@@ -17,11 +20,10 @@ odds = prompt("Shiny odds? 8 for 1/8192, 16 for 1/4096. Max is 65535")
 
 do {
     pID = randomInt(0xFFFFFFFF)
-    pSV = (pID & 0xFFFF)^(pID >>> 16)
-    shiny = tSV ^ pSV
-    console.log(shiny)
+    shiny = calculateShiny(tID, sID, pID)
     counter++
-    console.log("count = " + counter)
+    console.log("Encounter: " + counter)
+    console.log("Shiny Value: " + shiny)
     console.log("")
 } while(shiny >= odds)
 console.log("shiny!")
